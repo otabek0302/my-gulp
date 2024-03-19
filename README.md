@@ -1,15 +1,12 @@
-<p align="center">
+<h1 align="center" style="font-size: 30px;">The Custom React Clone system by GULP</h1>
+<div align="center">
     <a href="https://gulpjs.com">
-        <img height="257" width="114" src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png">
+        <img height="200" width="100" src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png">
     </a>
-    vs
     <a href="https://react.dev">
-        <img height="257" width="114" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/React_Logo_SVG.svg/1200px-React_Logo_SVG.svg.png">
+        <img height="200" width="200" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/React_Logo_SVG.svg/1200px-React_Logo_SVG.svg.png">
     </a>
-  <p align="center">The Custom React Clone system by GULP</p>
-</p>
-
-[![NPM version][npm-image]][npm-url][![Downloads][downloads-image]][npm-url][![Build Status][travis-image]][travis-url][![AppVeyor Build Status][appveyor-image]][appveyor-url][![Coveralls Status][coveralls-image]][coveralls-url][![OpenCollective Backers][backer-badge]][backer-url][![OpenCollective Sponsors][sponsor-badge]][sponsor-url][![Gitter chat][gitter-image]][gitter-url]
+</div>
 
 ## What is gulp?
 
