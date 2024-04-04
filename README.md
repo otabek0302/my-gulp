@@ -17,7 +17,12 @@
 
 ## Installation
 
-Refer to our [Quick Start guide][quick-start] for installation instructions.
+To use this project, follow these steps:
+
+1. Install dependencies: `npm install`.
+2. Run development mode: `npm start`.
+3. Make changes to your source files.
+4. The project will automatically compile and reload in your browser.
 
 ## Roadmap
 
@@ -25,7 +30,26 @@ Explore our ongoing projects and unresolved issues on [GitHub][roadmap].
 
 ## Documentation
 
-Visit our website for the [Getting Started guide][getting-started-guide] and [API documentation][api-docs].
+This project utilizes Gulp as a task runner for automating various development tasks. Below is a list of plugins used in the project:
+
+- **gulp-plumber**: Prevents crashes caused by errors from breaking Gulp streams.
+- **gulp-notify**: Sends system notifications for Gulp tasks.
+- **gulp-replace**: Replaces text patterns in files.
+- **gulp-typograf**: Applies typographic rules to text files.
+- **gulp-clean**: Deletes files and folders.
+- **gulp-newer**: Passes through newer source files only.
+- **gulp-sourcemaps**: Generates source maps for CSS and JavaScript files.
+- **gulp-group-css-media-queries**: Groups CSS media queries.
+- **gulp-autoprefixer**: Adds CSS vendor prefixes automatically.
+- **gulp-webpcss**: Adds WebP image support to CSS.
+- **gulp-clean-css**: Minifies CSS files.
+- **webpack-stream**: Integrates Webpack with Gulp.
+- **gulp-minify**: Minifies JavaScript files.
+- **gulp-babel**: Transpiles JavaScript using Babel.
+- **gulp-webp**: Converts images to WebP format.
+- **gulp-imagemin**: Minifies images.
+- **gulp-svg-sprite**: Generates SVG sprites.
+
 
 **Please bear with us as we update our documentation. Report any issues you encounter!**
 
