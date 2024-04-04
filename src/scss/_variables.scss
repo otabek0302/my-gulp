@@ -1,0 +1,48 @@
+// ********************** Container / Breakpoints ******************** //
+
+$containerWidth: 1200;
+$containerPadding: 40;
+$containerSidePadding: $containerPadding * 2;
+$breakpoint1450: 1449.98+px;
+$breakpoint992: 991.98+px;
+$breakpoint768: 767.98+px;
+$breakpoint480: 479.98+px;
+
+
+// ********************** Variables / Colors ******************** //
+$body-font-family: sans-serif;
+$body-font-size: 1rem;
+$body-font-weight: 400;
+$body-line-height: 1.5;
+$body-bg-color: #00276D;
+$body-text-color: #00276D;
+
+$primary: #7c3aed;
+$primary-dark: #5f14e0;
+$primary-light: #9b69f1;
+
+$secondary: #ed3a51;
+$secondary-dark: #e0142f;
+$secondary-light: #f1697a;
+
+$info: #0dcaf0;
+$success: #3aed3a;
+$warning: #eded3a;
+$error: #ed3a3a;
+
+$light: #f8f9fa;
+$dark: #00276D;
+$gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+
+$copy: #252329;
+$copy-light: #645e6e;
+$copy-lighter: #8a8495;
+
+$background: #efeff1;
+$foreground: #fbfbfb;
+$border: #dedde2;
+
+// Burger Menu
+$burgerBreakpoint: $breakpoint992;
+$burgerColor: 'black';
+$burgerActiveColor: 'white';

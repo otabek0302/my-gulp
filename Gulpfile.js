@@ -1,79 +1,83 @@
 // Import Packedge
 import pkg from 'gulp';
-const { src, dest } = pkg;
-const { watch, parallel, series, task } = pkg;
+const { src, dest, watch, parallel, series, task } = pkg;
 
 import * as nodePath from 'path';
 const root_folder = nodePath.basename(nodePath.resolve());
 
 /* Plugins */
-import { deleteAsync } from 'del';
-import replace from 'gulp-replace';
-import webpHtmlNosvg from 'gulp-webp-html-nosvg';
 import plumber from 'gulp-plumber';
 import notify from 'gulp-notify';
-import rename from 'gulp-rename';
+import replace from 'gulp-replace';
+import typograf from 'gulp-typograf';
+import clean from 'gulp-clean';
 import newer from 'gulp-newer';
+import rename from 'gulp-rename';
+import changed from 'gulp-changed';
+import fs from 'fs';
 
-// Browser
+// Live Server
 import browsersync from 'browser-sync';
 
 /* HTML */
-import fileInclude from 'gulp-file-include';
+import fileinclude from 'gulp-file-include';
+import htmlclean from 'gulp-htmlclean';
 
 /* CSS / SCSS */
 import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
-import cleanCss from 'gulp-clean-css';
-import webpcss from 'gulp-webpcss';
-import autoprefixer from 'gulp-autoprefixer';
+import sourcemaps from 'gulp-sourcemaps';
 import groupCssMediaQueries from 'gulp-group-css-media-queries';
+import autoprefixer from 'gulp-autoprefixer';
+import webpcss from 'gulp-webpcss';
+import cleanCss from 'gulp-clean-css';
 
-/* JavsScript */
+//Js packeges
 import webpack from 'webpack-stream';
 import minify from 'gulp-minify';
+import webpackConfig from './webpack.config.js';
+import babel from 'gulp-babel';
 
 /* Images */
 import webp from 'gulp-webp';
-import imagemin from 'gulp-imagemin';
 
 /* Svg */
-import svgSprite from 'gulp-svg-sprite';
+import svgsprite from 'gulp-svg-sprite';
 
 // Ways to folder
-const build_folder = './build';
-const src_folder = './src';
-
 const path = {
   build: {
-    js: `${build_folder}/js/`,
-    css: `${build_folder}/css/`,
-    html: `${build_folder}/`,
-    images: `${build_folder}/img`,
-    files: `${build_folder}/`,
+    html: `./build/`,
+    css: `./build/css/`,
+    js: `./build/js/`,
+    images: `./build/img`,
+    svg: `./build/img/svgsprite/`,
+    fonts: `./build/fonts`,
+    files: `./build/`,
   },
   src: {
-    js: `${src_folder}/js/app.js`,
-    images: `${src_folder}/img/**/*.{jpg,jpeg,png,gif,webp}`,
-    svg: `${src_folder}/img/**/*.svg`,
-    scss: `${src_folder}/scss/style.scss`,
-    html: `${src_folder}/*.html`,
-    files: `${src_folder}/*.*`,
-    svgicons: `${src_folder}/svgicons/*.svg`,
+    html: `./src/*.html`,
+    scss: `./src/scss/style.scss`,
+    js: `./src/js/**/*.*`,
+    images: `./src/img/**/*.{jpg,jpeg,png,gif,webp}`,
+    svg: `./src/img/**/*.svg`,
+    fonts: `./src/fonts/**/*`,
+    files: `./src/*.*`,
   },
   watch: {
-    js: `${src_folder}/**/*.js`,
-    images: `${src_folder}/img/**/*.{jpg,jpeg,png,svg,gif,ico,webp}`,
-    scss: `${src_folder}/scss/**/*.scss`,
-    html: `${src_folder}/**/*.html`,
-    files: `${src_folder}/src/**/*.*`,
+    html: `./src/**/*.html`,
+    js: `./src/**/*.js`,
+    scss: `./src/scss/**/*.scss`,
+    images: `./src/img/**/*.{jpg,jpeg,png,svg,gif,ico,webp}`,
+    svgicons: `./src/img/svgicons/**/*.svg`,
+    files: `./src/**/*.*`,
+    fonts: `./src/fonts/**/*`,
   },
-  clean: build_folder,
-  build_folder: build_folder,
-  src_folder: src_folder,
+  clean: './build/',
+  build_folder: './build/',
+  src_folder: './src/',
   root_folder: root_folder,
-  ftp: ``,
 };
 
 /* Plugins for Tasks */
@@ -81,52 +85,77 @@ const plugins = {
   replace: replace,
   plumber: plumber,
   notify: notify,
-  browsersync: browsersync,
   newer: newer,
+  typograf: typograf,
+  changed: changed,
+  rename: rename,
+  browsersync: browsersync,
 };
 
 /* Copy */
 const copy = () => {
-  return src(path.src.files).pipe(dest(path.build.files));
-};
-/* Clean Folder and Reset */
-const reset = () => {
-  return deleteAsync(path.clean);
+  return src(path.src.files)
+    .pipe(changed(path.build_folder))
+    .pipe(dest(path.build.files));
 };
 
-/* TASKS */
+/* Clean Folder and Reset */
+const reset = (done) => {
+  if (fs.existsSync('./build/')) {
+    return src('./build/', { read: false }).pipe(clean({ force: true }));
+  }
+  done();
+};
+
+/********************************************************** TASKS ***********************************************************/
 
 /* Html Task */
 const html = () => {
   return src(path.src.html)
-    .pipe(fileInclude())
+    .pipe(fileinclude())
+    .pipe(plugins.changed(path.build.html, { force: true }))
     .pipe(
       plugins.plumber(
         plugins.notify.onError({
           title: 'HTML',
-          message: 'Error: <%= error.message %>',
+          message: 'Error: <%= error.message  %>',
+          sounds: false,
         })
       )
     )
+    .pipe(replace(/(@img\/.*?)(\.png)(?=["'\s>])/g, '$1.webp'))
+    .pipe(
+      plugins.typograf({
+        locale: ['ru', 'en-US'],
+        htmlEntity: { type: 'digit' },
+        safeTags: [
+          ['<\\?php', '\\?>'],
+          ['<no-typography>', '</no-typography>'],
+        ],
+      })
+    )
     .pipe(plugins.replace(/@img\//g, 'img/'))
-    .pipe(webpHtmlNosvg())
-    .pipe(dest(path.build.html))
-    .pipe(plugins.browsersync.reload({ stream: true }));
+    .pipe(htmlclean())
+    .pipe(dest(path.build.html));
 };
+
 /* Scss function */
 const scss = () => {
   return src(path.src.scss)
+    .pipe(plugins.changed(path.build.css))
     .pipe(
       plugins.plumber(
         plugins.notify.onError({
           title: 'SCSS',
-          message: 'Error: <%= error.message %>',
+          message: 'Error: <%= error.message  %>',
+          sounds: false,
         })
       )
     )
-    .pipe(plugins.replace(/@img\//g, 'img/'))
+    .pipe(sourcemaps.init())
     .pipe(sass({ outputStyle: 'expanded' }))
     .pipe(groupCssMediaQueries())
+    .pipe(plugins.replace(/@img\//g, 'img/'))
     .pipe(
       webpcss({
         webpClass: '.webp',
@@ -143,44 +172,42 @@ const scss = () => {
     .pipe(dest(path.build.css))
     .pipe(cleanCss())
     .pipe(
-      rename({
+      plugins.rename({
         extname: '.min.css',
       })
     )
+    .pipe(sourcemaps.write())
     .pipe(dest(path.build.css))
     .pipe(plugins.browsersync.reload({ stream: true }));
 };
 
 /* Js Function */
 const js = () => {
-  return (
-    src(path.src.js, { sourcemaps: true })
-      .pipe(
-        plugins.plumber(
-          plugins.notify.onError({
-            title: 'SCSS',
-            message: 'Error: <%= error.message %>',
-          })
-        )
-      )
-      // .pipe(minify({
-      //      ext: {
-      //           min: '.min.js'
-      //      },
-      //      ignoreFiles: ['-min.js']
-      // }))
-      .pipe(
-        webpack({
-          mode: 'development',
-          output: {
-            filename: 'app.min.js',
-          },
+  return src(path.src.js)
+    .pipe(plugins.changed(path.build.js))
+    .pipe(
+      plugins.plumber(
+        plugins.notify.onError({
+          title: 'JS',
+          message: 'Error: <%= error.message  %>',
+          sounds: false,
         })
       )
-      .pipe(dest(path.build.js))
-      .pipe(plugins.browsersync.reload({ stream: true }))
-  );
+    )
+    .pipe(
+      minify({
+        ext: {
+          min: '.min.js',
+        },
+        ignoreFiles: ['-min.js'],
+      })
+    )
+    .pipe(babel())
+    .pipe(webpack(webpackConfig))
+    .pipe(dest(path.build.js))
+    .pipe(plugins.browsersync.reload({ stream: true }));
 };
+
 /* Images function */
 const images = () => {
   return src(path.src.images)
@@ -192,27 +219,17 @@ const images = () => {
         })
       )
     )
+    .pipe(plugins.changed(path.build.images))
     .pipe(plugins.newer(path.build.images))
-    .pipe(webp())
-    .pipe(dest(path.build.images))
-    .pipe(src(path.src.images))
-    .pipe(plugins.newer(path.build.images))
-    .pipe(
-      imagemin({
-        progressive: true,
-        svgPlugins: [{ removeViewBox: false }],
-        interlaced: true,
-        optimizationLevel: 3,
-      })
-    )
-    .pipe(dest(path.build.images))
-    .pipe(src(path.src.svg))
+    .pipe(webp({ quality: 85 }))
     .pipe(dest(path.build.images))
     .pipe(plugins.browsersync.reload({ stream: true }));
 };
+
 /* Svg Icons */
-const svgIcons = () => {
-  return src(path.src.svgicons)
+const svgStack = () => {
+  return src(path.src.svg)
+    .pipe(plugins.changed(path.build.images, { extension: '.svg' }))
     .pipe(
       plugins.plumber(
         plugins.notify.onError({
@@ -222,41 +239,97 @@ const svgIcons = () => {
       )
     )
     .pipe(
-      svgSprite({
+      svgsprite({
         mode: {
           stack: {
-            sprite: `./icons/icons.svg`,
             example: true,
           },
         },
       })
     )
-    .pipe(dest(path.build.images));
+    .pipe(dest(path.build.svg));
 };
 
+const svgSymbol = () => {
+  return src(path.src.svg)
+    .pipe(plugins.changed(path.build.images, { extension: '.svg' }))
+    .pipe(
+      plugins.plumber(
+        plugins.notify.onError({
+          title: 'SVG',
+          message: 'Error: <%= error.message %>',
+        })
+      )
+    )
+    .pipe(
+      svgsprite({
+        mode: {
+          symbol: {
+            sprite: '../sprite.symbol.svg',
+          },
+        },
+        shape: {
+          transform: [
+            {
+              svgo: {
+                plugins: [
+                  {
+                    name: 'removeAttrs',
+                    params: {
+                      attrs: '(fill|stroke)',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      })
+    )
+    .pipe(dest(path.build.svg));
+};
+
+/* Fonts */
+function fonts() {
+  return src(path.src.fonts)
+    .pipe(plugins.changed(path.build.fonts))
+    .pipe(dest(path.build.fonts));
+}
+
 /* Browser Live Server */
-function server(done) {
+function server() {
   plugins.browsersync.init({
     server: {
       baseDir: `${path.build.html}`,
     },
-    notify: false,
+    notify: true,
     port: 3000,
   });
 }
 
-/* Watch all tasks */
+/* Watch Tasks */
 function watcher() {
-  watch(path.watch.files, copy);
-  watch(path.watch.html, html);
-  watch(path.watch.scss, scss);
-  watch(path.watch.js, js);
-  watch(path.watch.images, images);
+  watch(path.watch.html, parallel(html));
+  watch(path.watch.scss, parallel(scss));
+  watch(path.watch.js, parallel(js));
+  watch(path.watch.images, parallel(images));
+  watch(path.watch.fonts, parallel(fonts));
+  watch(path.watch.files, parallel(copy));
 }
-/* Concat tasks in one */
-const main_task = parallel(copy, html, scss, js, images, svgIcons);
+
+/* Concat tasks in one time */
+const main_tasks = parallel(
+  html,
+  scss,
+  js,
+  images,
+  fonts,
+  parallel(svgStack, svgSymbol),
+  copy
+);
 
 /* Looking implemention of tasks */
-const dev = series(reset, main_task, parallel(watcher, server));
-/* Implement Tasks */
+const dev = series(reset, main_tasks, parallel(watcher, server));
+
+/* Implement Tasks in NPM  */
 task('default', dev);

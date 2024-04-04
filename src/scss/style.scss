@@ -1,1 +1,148 @@
+// ************************ Main Styles ************************ //
+@import './variables';
+@import './header';
+@import './footer';
+
+
+// ************************ Defaul styles ************************ //
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: var(fonts), sans-serif;
+}
+
+.container {
+  max-width: ($containerWidth + $containerPadding) + px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 $containerSidePadding + px;
+
+  @media (max-width: $breakpoint1450) {
+    max-width: 1200px;
+  }
+
+  @media (max-width: $breakpoint992) {
+    max-width: 970px;
+  }
+
+  @media (max-width: $breakpoint768) {
+    max-width: 750px;
+  }
+
+  @media (max-width: $breakpoint480) {
+    max-width: none;
+  }
+
+}
+
+html {
+  scroll-behavior: smooth;
+  transition: all 0.5s ease;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+button {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  img {
+    @media (max-width: $breakpoint768) {}
+  }
+}
+
+.section {
+
+  //.section__title 
+  &__title {
+    font-size: 50px;
+    line-height: 56px;
+  }
+
+  //.section__text
+  &__text {
+    font-size: 20px;
+    line-height: 22px;
+    margin: 10px 0 40px;
+  }
+}
+
+.btn {
+  background-color: $primary;
+  padding: 18px 48px;
+  font-size: 22px;
+  line-height: 24px;
+  color: $copy;
+  max-width: fit-content;
+
+  @media (max-width: $breakpoint768) {
+    padding: 14px 40px;
+    font-size: 20px;
+    line-height: 22px;
+  }
+
+  @media (max-width: $breakpoint480) {
+    padding: 10px 30px;
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  &:hover {
+    background-color: $primary-dark;
+    transition: .3s all ease;
+  }
+}
+
+.btn__outline {
+  background-color: $background;
+  padding: 18px 48px;
+  font-size: 22px;
+  line-height: 24px;
+  max-width: fit-content;
+  border: 2px solid $border;
+  transition: .3s all ease;
+  color: $primary;
+
+  @media (max-width: $breakpoint768) {
+    padding: 14px 40px;
+    font-size: 20px;
+    line-height: 22px;
+  }
+
+  @media (max-width: $breakpoint480) {
+    padding: 10px 30px;
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  &:hover {
+    background-color: $primary-dark;
+    color: $copy;
+  }
+}
 

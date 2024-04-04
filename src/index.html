@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME | </title>
-</head>
+@@include('components/head.html', { "title": "Home Page" })
+
 <body>
-    <h1>HELLO WORLD</h1>
+    @@include('components/header.html')
+    <h1>Hello Alex Adams, and me</h1>
+    <h1>Hello Alex Adams, and me</h1>
+    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iste distinctio quisquam veniam explicabo suscipit temporibus tempore libero qui dolorem minima, quas, sunt, exercitationem deserunt culpa. Quisquam fugit voluptatem libero velit.</p>
+    <img src="@img/logo.png" alt="">
+    @@include('components/footer.html')
+
+    <script src="./js/index.bundle.js"></script>
 </body>
+
 </html>
